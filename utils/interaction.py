@@ -1,9 +1,11 @@
 from utils.libs import *
+from utils.init import *
 
 class layer3():
     def __init__(self,private_key, proxy = None):
-        self.private = private_key
-        self.public_address =w3.eth.account.from_key(self.private_key)
+        # TODO: Add support proxy
+        self.private_key = private_key
+        self.public_address =w3.eth.account.from_key(self.private_key).address
         self.assecc_token = None
         self.walletid = None
         self.headers = {"Content-Type": "application/json",
@@ -19,7 +21,7 @@ class layer3():
         # })
 
     
-    def login(self, connectIntentId="wYVvAk3KQMUBf-QR_2Tpz", address):
+    def login(self, connectIntentId="wYVvAk3KQMUBf-QR_2Tpz"):
         
         data = {"0":{"json":{"connectIntentId":connectIntentId,"data":{"buttonName":"MetaMask","device":{"type":"desktop","os":{"name":"Windows","version":"NT 10.0","versionName":"10"},"browser":{"name":"Chrome","version":"113.0.0.0"}}}}}}
         r = session.post("https://layer3.xyz/api/trpc/track.walletModal?batch=1", json=data)
@@ -30,13 +32,14 @@ class layer3():
         nonce = json.loads(json.dumps(eval(data)[0]))
         nonce = nonce["result"]["data"]["json"]
 
+
         # Signing
         msg = f"Layer3 One-Time Key: {nonce}"
         message = encode_defunct(text=msg)
-        signed_message =  w3.eth.account.sign_message(message, private_key=self.private).signature.hex()
+        signed_message =  w3.eth.account.sign_message(message, private_key=self.private_key).signature.hex()
         
         # logging
-        data = {"0":{"json":{"connectIntentId":"wYVvAk3KQMUBf-QR_2Tpz","data":{"didSign":True}}},"1":{"json":{"address":self.public_address,"signedMessage":signed_message,"nonce":nonce,"captchaValue":None,"referralCode":None,"walletMetadata":{"walletName":"MetaMask","connectorType":"INJECTED"},"chainId":42161},"meta":{"values":{"captchaValue":["undefined"]}}}}
+        data = {"0":{"json":{"connectIntentId":"wYVvAk3KQMUBf-QR_2Tpz","data":{"didSign":True}}},"1":{"json":{"address":str(self.public_address),"signedMessage":signed_message,"nonce":nonce,"captchaValue":None,"referralCode":None,"walletMetadata":{"walletName":"MetaMask","connectorType":"INJECTED"},"chainId":42161},"meta":{"values":{"captchaValue":["undefined"]}}}}
         r = session.post("https://layer3.xyz/api/trpc/track.walletModal,auth.login?batch=1", json=data)
 
 
@@ -50,23 +53,28 @@ class layer3():
         "accept-language": "ru-RU,ru;q=0.9",
         "cookie": f"layer3_access_token={self.access_token};",
         }
+        return self.walletid
     
     def bountyStep(self, id, inputData = None, userAddressId = None):
-        data = {"0":{"json":{"bountyStepId":id,"inputData":inputData,"userAddressId":userAddressId},"meta":{"values":{"inputData":["undefined"],"userAddressId":["undefined"]}}}}
+        if userAddressId:
+            data = {"0":{"json":{"bountyStepId":id,"inputData":None,"userAddressId":self.walletid},"meta":{"values":{"inputData":["undefined"]}}}}
+
+        else:
+            data = {"0":{"json":{"bountyStepId":id,"inputData":inputData,"userAddressId":userAddressId},"meta":{"values":{"inputData":["undefined"],"userAddressId":["undefined"]}}}}
         r = session.post("https://layer3.xyz/api/trpc/bountyStep.completeBountyStep?batch=1", json=data, headers = self.headers)
 
         if r.status_code != 200:
-            print(f"Problem in - {self.public_address}")
+            print(f"Problem step in - {self.public_address} - {r.text}")
             return 0
         return 1
 
-    def bountyStep(self, id):
+    def bountyClaim(self, id):
 
         data = {"0":{"json":{"taskId":id}}}
 
         r = session.post("https://layer3.xyz/api/trpc/bountyClaim.claimTask?batch=1", json=data, headers = self.headers)
         if r.status_code != 200:
-            print(f"Problem in - {self.public_address}")
+            print(f"Problem cliam in - {self.public_address} - {r.text}")
             return 0
         return 1
             
