@@ -6,6 +6,8 @@ from utils.tasks import *
 
 if __name__ == '__main__':
 
+    print("Hallo, this version of code is made specifically for Kingsman DAO\nDo not share this file with others\n\nComments, ideas - @Straus_fm")
+
     with open('wallets.txt') as f:
         wallets = f.readlines()
 
