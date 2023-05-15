@@ -44,14 +44,34 @@ class layer3():
         self.access_token = result["result"]["data"]["json"]["accessToken"]
         self.walletid = result["result"]["data"]["json"]["user"]["UserAddresses"][0]["id"]
 
-        session.headers.update(self.headers = {"Content-Type": "application/json",
+        self.headers = {"Content-Type": "application/json",
         "referer":"https://layer3.xyz/quests/",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
         "accept-language": "ru-RU,ru;q=0.9",
-        "cookie": f"layer3_access_token={access_token};",
-        })
-                 
-        data = {"0":{"json":{"connectIntentId":connectIntentId,"data":{"didSign":True}}},"1":{"json":{"address"self.public_address:,"signedMessage":"0x71f34ebe43f1835be514f7b99e70768a8a5c467b4529c9b89f545ebd627a35666252db8407634826fe3f4f109879b3bf5df9d9e2f037578ff4d725724005dc241c","nonce":"VN0GXKSNG5TR","captchaValue":None,"referralCode":None,"walletMetadata":{"walletName":"MetaMask","connectorType":"INJECTED"},"chainId":42161},"meta":{"values":{"captchaValue":["undefined"]}}}}
-        r = session.post("https://layer3.xyz/api/trpc/track.walletModal,auth.login?batch=1", json=data)
+        "cookie": f"layer3_access_token={self.access_token};",
+        }
+    
+    def bountyStep(self, id, inputData = None, userAddressId = None):
+        data = {"0":{"json":{"bountyStepId":id,"inputData":inputData,"userAddressId":userAddressId},"meta":{"values":{"inputData":["undefined"],"userAddressId":["undefined"]}}}}
+        r = session.post("https://layer3.xyz/api/trpc/bountyStep.completeBountyStep?batch=1", json=data, headers = self.headers)
 
-        #TODO add checing
+        if r.status_code != 200:
+            print(f"Problem in - {self.public_address}")
+            return 0
+        return 1
+
+    def bountyStep(self, id):
+
+        data = {"0":{"json":{"taskId":id}}}
+
+        r = session.post("https://layer3.xyz/api/trpc/bountyClaim.claimTask?batch=1", json=data, headers = self.headers)
+        if r.status_code != 200:
+            print(f"Problem in - {self.public_address}")
+            return 0
+        return 1
+            
+
+
+
+
+
