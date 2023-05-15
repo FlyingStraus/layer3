@@ -3,12 +3,13 @@ from utils.interaction import *
 from utils.init import *
 
 class Tasks():
-    def __init__(self, private_key, assecc_token=None):
+    def __init__(self, private_key, assecc_token=None, proxy=None):
         self.private_key = private_key
         self.assecc_token = assecc_token
+        self.proxy = proxy
     
     def polygon_testnet(self):
-        wallet = layer3(self.private_key)
+        wallet = layer3(self.private_key,self.proxy)
         # try:
         wallet.login()
         wallet.bountyStep(id = 2591)

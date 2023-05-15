@@ -8,6 +8,12 @@ class layer3():
         self.public_address =w3.eth.account.from_key(self.private_key).address
         self.assecc_token = None
         self.walletid = None
+        if proxy is not None:
+            proxy = proxy.split(':')
+            session.proxies = {
+            'https' : f'https://{proxy[2]}:{proxy[3]}@{proxy[0]}:{proxy[1]}',
+            'http': f'https://{proxy[2]}:{proxy[3]}@{proxy[0]}:{proxy[1]}',
+            }
         self.headers = {"Content-Type": "application/json",
         "referer":"https://layer3.xyz/quests/",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
