@@ -61,10 +61,11 @@ class layer3():
         }
         return self.walletid
     
-    def bountyStep(self, id, inputData = None, userAddressId = None):
-        if userAddressId:
+    def bountyStep(self, id=None, inputData = None, userAddressId = None, data = None):
+        if data is not None:
+            data = data
+        elif userAddressId:
             data = {"0":{"json":{"bountyStepId":id,"inputData":None,"userAddressId":self.walletid},"meta":{"values":{"inputData":["undefined"]}}}}
-
         else:
             data = {"0":{"json":{"bountyStepId":id,"inputData":inputData,"userAddressId":userAddressId},"meta":{"values":{"inputData":["undefined"],"userAddressId":["undefined"]}}}}
         r = session.post("https://layer3.xyz/api/trpc/bountyStep.completeBountyStep?batch=1", json=data, headers = self.headers)

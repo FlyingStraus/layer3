@@ -3,6 +3,12 @@ from utils.init import *
 from utils.interaction import * 
 from utils.tasks import * 
 
+def task_helper(lol,todo_task):
+    if todo_task == 1:
+        lol.polygon_testnet()
+    elif todo_task == 2:
+        lol.understanding_modular_blockchains()
+
 
 if __name__ == '__main__':
 
@@ -49,19 +55,13 @@ if __name__ == '__main__':
     if proxies is not None:
         for i in range(len(wallets)):
             print(f"Duin - {wallets[i]} - {proxies[i]}")
-            if task_todo == 1:
-                lol = Tasks(wallets[i],proxies[i])
-                lol.polygon_testnet()
-            print("Done")
-            # input("Next?")
+            lol = Tasks(wallets[i],proxies[i])
+            task_helper(lol,task_todo)
     else:
         for i in range(len(wallets)):
             print(f"Duin - {wallets[i]}")
-            if task_todo == 1:
-                lol = Tasks(wallets[i])
-                lol.polygon_testnet()
-            print("Done")
-            # input("Next?")
+            lol = Tasks(wallets[i])
+            task_helper(lol,task_todo)           
 
 
 
