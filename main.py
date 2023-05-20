@@ -3,11 +3,21 @@ from utils.init import *
 from utils.interaction import * 
 from utils.tasks import * 
 
+# TODO: add stat problem, all of them are the same  "-1":"Get stat",
+
+
 def task_helper(lol,todo_task):
-    if todo_task == 1:
+    if todo_task == -1:
+        lol.get_stat()
+    elif todo_task == -2:
+        lol.gm_press()
+    elif todo_task == 1:
         lol.polygon_testnet()
     elif todo_task == 2:
         lol.understanding_modular_blockchains()
+    elif todo_task == 3:
+        lol.honeypot_scams()
+    
 
 
 if __name__ == '__main__':
@@ -47,9 +57,10 @@ if __name__ == '__main__':
 
     print(f"Wallets num - {len(wallets)}") 
     print("Choose Task")
-    # print(TASKS_list['1'])
-    for i in range(1,len(TASKS_list)+1):
-        print(f"{i}) {TASKS_list[f'{i}']}")
+
+    for key, value in TASKS_list.items():
+        print(f"{key}) {value}")
+
     task_todo = int(input("Your choise: "))
 
     if proxies is not None:

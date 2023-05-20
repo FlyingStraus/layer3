@@ -27,7 +27,7 @@ class layer3():
         # })
 
     
-    def login(self, connectIntentId="wYVvAk3KQMUBf-QR_2Tpz"):
+    def login(self, connectIntentId="BsEztrJmmu7o2V452P_k8"):
         
         data = {"0":{"json":{"connectIntentId":connectIntentId,"data":{"buttonName":"MetaMask","device":{"type":"desktop","os":{"name":"Windows","version":"NT 10.0","versionName":"10"},"browser":{"name":"Chrome","version":"113.0.0.0"}}}}}}
         r = session.post("https://layer3.xyz/api/trpc/track.walletModal?batch=1", json=data)
@@ -45,8 +45,10 @@ class layer3():
         signed_message =  w3.eth.account.sign_message(message, private_key=self.private_key).signature.hex()
         
         # logging
-        data = {"0":{"json":{"connectIntentId":"wYVvAk3KQMUBf-QR_2Tpz","data":{"didSign":True}}},"1":{"json":{"address":str(self.public_address),"signedMessage":signed_message,"nonce":nonce,"captchaValue":None,"referralCode":None,"walletMetadata":{"walletName":"MetaMask","connectorType":"INJECTED"},"chainId":42161},"meta":{"values":{"captchaValue":["undefined"]}}}}
+        data = {"0":{"json":{"connectIntentId":connectIntentId,"data":{"didSign":True}}},"1":{"json":{"address":str(self.public_address),"signedMessage":signed_message,"nonce":nonce,"captchaValue":None,"referralCode":None,"walletMetadata":{"walletName":"MetaMask","connectorType":"INJECTED"},"chainId":80001},"meta":{"values":{"captchaValue":["undefined"]}}}}
         r = session.post("https://layer3.xyz/api/trpc/track.walletModal,auth.login?batch=1", json=data)
+        # print(r.text)
+
 
 
         result = json.loads(json.dumps(eval((r.text).replace("null", "None").replace("false", "False").replace("true", "True"))))[1]
@@ -59,7 +61,7 @@ class layer3():
         "accept-language": "ru-RU,ru;q=0.9",
         "cookie": f"layer3_access_token={self.access_token};",
         }
-        return self.walletid
+        return self.walletid, self.public_address
     
     def bountyStep(self, id=None, inputData = None, userAddressId = None, data = None):
         if data is not None:
@@ -68,10 +70,11 @@ class layer3():
             data = {"0":{"json":{"bountyStepId":id,"inputData":None,"userAddressId":self.walletid},"meta":{"values":{"inputData":["undefined"]}}}}
         else:
             data = {"0":{"json":{"bountyStepId":id,"inputData":inputData,"userAddressId":userAddressId},"meta":{"values":{"inputData":["undefined"],"userAddressId":["undefined"]}}}}
+        
         r = session.post("https://layer3.xyz/api/trpc/bountyStep.completeBountyStep?batch=1", json=data, headers = self.headers)
-
+        # print(f"{id} - {r.text}")
         if r.status_code != 200:
-            print(f"Problem step in - {self.public_address} - {r.text}")
+            print(f"Problem step in - {self.public_address} - {r.text} - {id} - {data}")
             return 0
         return 1
 
@@ -81,11 +84,25 @@ class layer3():
 
         r = session.post("https://layer3.xyz/api/trpc/bountyClaim.claimTask?batch=1", json=data, headers = self.headers)
         if r.status_code != 200:
-            print(f"Problem cliam in - {self.public_address} - {r.text}")
+            if r.text.find("You've already completed this quest!"):
+                pass
+            else:
+                print(f"Problem cliam in - {self.public_address} - {r.text}")
             return 0
         return 1
-            
 
+    def post_sendAnyRequest(self,url, data=None):
+        r = session.post(url, json=data, headers = self.headers)
+        return r.text
+    
+    def get_sendAnyRequest(self,url):
+        r = session.get(url,headers = self.headers)
+        if r.status_code != 200:
+            print(f"Problem sending Send Any Request in - {self.public_address} - {r.text}")
+        return r.text
+    # def get_stat(self,id):
+    #     r = session.get(url = f"https://layer3.xyz/api/trpc/config.globalAnnouncement,user.getXpDataForUser?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22userId%22%3A851509%7D%7D%2C%222%22%3A%7B%22json%22%3A%7B%22userId%22%3A851509%7D%7D%2C%223%22%3A%7B%22json%22%3A%7B%22userId%22%3A851509%7D%7D%2C%224%22%3A%7B%22json%22%3A%7B%22userId%22%3A851509%2C%22cursor%22%3Anull%7D%2C%22meta%22%3A%7B%22values%22%3A%7B%22cursor%22%3A%5B%22undefined%22%5D%7D%7D%7D%2C%225%22%3A%7B%22json%22%3A%7B%22identifier%22%3A%220xD598D2F54BfD64E1b3c83dfbCF0d055F2E1A5a77%22%7D%7D%2C%226%22%3A%7B%22json%22%3A%7B%22userId%22%3A851509%7D%7D%2C%227%22%3A%7B%22json%22%3A%7B%22userId%22%3A851509%7D%7D%2C%228%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D%7D",headers = self.headers)
+    #     print(r.text)
 
 
 
