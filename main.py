@@ -151,16 +151,32 @@ if __name__ == '__main__':
     for key, value in TASKS_list.items():
         print(f"{key}) {value}")
 
+
     task_todo = int(input("Your choise: "))
+
+    if task_todo == -5:
+        arr = range(1,len(TASKS_list)-1)
+        for task_todo in arr:
+            if proxies is not None:
+                for i in range(len(wallets)):
+                    # print(f"Duin - {wallets[i]}")
+                    lol = Tasks(wallets[i])
+                    task_helper(lol,task_todo)
+            else:
+                for i in range(len(wallets)):
+                    # print(f"Duin - {wallets[i]} - {proxies[i]}")
+                    lol = Tasks(wallets[i],proxies[i])
+                    task_helper(lol,task_todo)
+
 
     if proxies is not None:
         for i in range(len(wallets)):
-            print(f"Duin - {wallets[i]} - {proxies[i]}")
+            # print(f"Duin - {wallets[i]} - {proxies[i]}")
             lol = Tasks(wallets[i],proxies[i])
             task_helper(lol,task_todo)
     else:
         for i in range(len(wallets)):
-            print(f"Duin - {wallets[i]}")
+            # print(f"Duin - {wallets[i]}")
             lol = Tasks(wallets[i])
             task_helper(lol,task_todo)           
 
