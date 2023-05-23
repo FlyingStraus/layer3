@@ -160,26 +160,37 @@ if __name__ == '__main__':
             if proxies is not None:
                 for i in range(len(wallets)):
                     # print(f"Duin - {wallets[i]}")
-                    lol = Tasks(wallets[i])
-                    task_helper(lol,task_todo)
+                    try:
+                        lol = Tasks(wallets[i])
+                        task_helper(lol,task_todo)
+                    except Exception as er:
+                        print(f"Error - {er}")
             else:
                 for i in range(len(wallets)):
                     # print(f"Duin - {wallets[i]} - {proxies[i]}")
-                    lol = Tasks(wallets[i],proxies[i])
-                    task_helper(lol,task_todo)
+                    try:
+                        lol = Tasks(wallets[i],proxies[i])
+                        task_helper(lol,task_todo)
+                    except Exception as er:
+                        print(f"Error - {er}")
 
 
     if proxies is not None:
         for i in range(len(wallets)):
             # print(f"Duin - {wallets[i]} - {proxies[i]}")
-            lol = Tasks(wallets[i],proxies[i])
-            task_helper(lol,task_todo)
+            try:
+                lol = Tasks(wallets[i],proxies[i])
+                task_helper(lol,task_todo)
+            except Exception as er:
+                        print(f"Error - {er}")
     else:
         for i in range(len(wallets)):
             # print(f"Duin - {wallets[i]}")
-            lol = Tasks(wallets[i])
-            task_helper(lol,task_todo)           
-
+                try:
+                    lol = Tasks(wallets[i])
+                    task_helper(lol,task_todo)           
+                except Exception as er:
+                        print(f"Error - {er}")
 
 
     
