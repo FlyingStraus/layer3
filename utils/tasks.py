@@ -9,7 +9,7 @@ class Tasks():
         self.proxy = proxy
 
     def get_stat(self):
-        wallet = layer3(self.private_key,self.proxy)
+        wallet = layer3(self.private_key,proxy = self.proxy)
         try:
             walletid, public = wallet.login()            
                     # https://layer3.xyz/api/trpc/user.getXpDataForUser?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22userId%22%3A{89660  0}%7D%7D%7D
