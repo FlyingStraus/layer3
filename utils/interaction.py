@@ -8,6 +8,7 @@ class layer3():
         self.public_address =w3.eth.account.from_key(self.private_key).address
         self.assecc_token = None
         self.walletid = None
+        self.proxy = proxy
         if proxy is not None:
             proxy = proxy.split(':')
             session.proxies = {
@@ -28,6 +29,8 @@ class layer3():
 
     
     def login(self, connectIntentId="BsEztrJmmu7o2V452P_k8"):
+
+        print(f"PROXY - {self.proxy}")
         
         data = {"0":{"json":{"connectIntentId":connectIntentId,"data":{"buttonName":"MetaMask","device":{"type":"desktop","os":{"name":"Windows","version":"NT 10.0","versionName":"10"},"browser":{"name":"Chrome","version":"113.0.0.0"}}}}}}
         r = session.post("https://layer3.xyz/api/trpc/track.walletModal?batch=1", json=data)
@@ -44,12 +47,12 @@ class layer3():
         message = encode_defunct(text=msg)
         signed_message =  w3.eth.account.sign_message(message, private_key=self.private_key).signature.hex()
         
+
         # logging
-        data = {"0":{"json":{"connectIntentId":connectIntentId,"data":{"didSign":True}}},"1":{"json":{"address":str(self.public_address),"signedMessage":signed_message,"nonce":nonce,"captchaValue":None,"referralCode":None,"walletMetadata":{"walletName":"MetaMask","connectorType":"INJECTED"},"chainId":80001},"meta":{"values":{"captchaValue":["undefined"]}}}}
+        data = {"0":{"json":{"connectIntentId":"connectIntentId","data":{"strategy":"injected","buttonName":"MetaMask","browser":"Brave","os":"Windows","didConnect":True,"connectedWalletConnector":"INJECTED","connectedWalletName":"MetaMask","didSign":True}}},"1":{"json":{"signedMessage":signed_message,"nonce":nonce,"captchaValue":None,"walletMetadata":{"walletName":"MetaMask","connectorType":"INJECTED","os":"Windows","browser":"Brave"},"address":self.public_address,"chainId":1,"baseNetwork":"EVM","referralCode":None},"meta":{"values":{"captchaValue":["undefined"]}}}}
+        # data = {"0":{"json":{"connectIntentId":connectIntentId,"data":{"didSign":True}}},"1":{"json":{"address":str(self.public_address),"signedMessage":signed_message,"nonce":nonce,"captchaValue":None,"referralCode":None,"walletMetadata":{"walletName":"MetaMask","connectorType":"INJECTED"},"chainId":80001},"meta":{"values":{"captchaValue":["undefined"]}}}}
         r = session.post("https://layer3.xyz/api/trpc/track.walletModal,auth.login?batch=1", json=data)
         # print(r.text)
-
-
 
         result = json.loads(json.dumps(eval((r.text).replace("null", "None").replace("false", "False").replace("true", "True"))))[1]
         self.access_token = result["result"]["data"]["json"]["accessToken"]
