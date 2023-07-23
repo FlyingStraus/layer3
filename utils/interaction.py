@@ -31,8 +31,8 @@ class layer3():
     def login(self, connectIntentId="BsEztrJmmu7o2V452P_k8"):
 
         print(f"PROXY - {self.proxy}")
-        
-        data = {"0":{"json":{"connectIntentId":connectIntentId,"data":{"buttonName":"MetaMask","device":{"type":"desktop","os":{"name":"Windows","version":"NT 10.0","versionName":"10"},"browser":{"name":"Chrome","version":"113.0.0.0"}}}}}}
+        data = {"0":{"json":{"connectIntentId":connectIntentId,"data":{"strategy":"injected","buttonName":"MetaMask","browser":"Brave","os":"Windows"}}},"1":{"json":None,"meta":{"values":["undefined"]}},"2":{"json":{"connectIntentId":connectIntentId,"data":{"strategy":"injected","buttonName":"MetaMask","browser":"Brave","os":"Windows","didConnect":True,"connectedWalletConnector":"INJECTED","connectedWalletName":"MetaMask"}}}}
+        # data = {"0":{"json":{"connectIntentId":connectIntentId,"data":{"buttonName":"MetaMask","device":{"type":"desktop","os":{"name":"Windows","version":"NT 10.0","versionName":"10"},"browser":{"name":"Chrome","version":"113.0.0.0"}}}}}}
         r = session.post("https://layer3.xyz/api/trpc/track.walletModal?batch=1", json=data)
         data = {"0":{"json":None,"meta":{"values":["undefined"]}},"1":{"json":{"connectIntentId":connectIntentId,"data":{"didConnect":True,"walletMetadata":{"walletName":"MetaMask","connectorType":"INJECTED"}}}}}
         r = session.post("https://layer3.xyz/api/trpc/auth.getWalletSignatureNonce,track.walletModal?batch=1", json=data)
